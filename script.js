@@ -38,4 +38,48 @@ darkModeToggle.addEventListener('click', () => {
         localStorage.setItem('darkMode', 'disabled');
         darkModeToggle.classList.replace('bx-sun', 'bx-moon');
     }
-});
+});
+
+(function () {
+    var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function initOurServiceReveal() {
+        var section = document.getElementById("our-service");
+        if (!section) return;
+
+        if (prefersReduced) {
+            section.querySelectorAll("[data-service-animate], [data-service-animate-image]").forEach(function (el) {
+                el.classList.add("is-visible");
+            });
+            return;
+        }
+
+        var observer = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                });
+            },
+            { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+        );
+
+        section.querySelectorAll("[data-service-animate]").forEach(function (el, i) {
+            el.style.transitionDelay = i * 0.08 + "s";
+            observer.observe(el);
+        });
+
+        var imgWrap = section.querySelector("[data-service-animate-image]");
+        if (imgWrap) {
+            imgWrap.style.transitionDelay = "0.15s";
+            observer.observe(imgWrap);
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initOurServiceReveal);
+    } else {
+        initOurServiceReveal();
+    }
+})();
