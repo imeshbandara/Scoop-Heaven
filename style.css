@@ -15,8 +15,28 @@
     --secondary-color: #FFF0F5;
     --text-color: #4A4A4A;
     --bg-color: #FFFFFF;
+    --header-bg: #4A4A4A;
+    --card-bg: #ffffff;
+    --border-color: #000000;
 
     --box-shadow: 0px 4px 24px rgba(255, 133, 162, 0.25);
+}
+
+body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --secondary-color: #2d2d2d;
+    --header-bg: #111111;
+    --card-bg: #2d2d2d;
+    --border-color: #444444;
+
+    --box-shadow: 0px 4px 24px rgba(255, 133, 162, 0.15);
+}
+
+body {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 section {
@@ -28,10 +48,6 @@ img {
 
 }
 
-body {
-    color: var(--text-color);
-}
-
 header {
     position: fixed;
     width: 100%;
@@ -41,10 +57,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid black;
+    border: 1px solid var(--border-color);
     padding: 18px 100px;
-    background: var(--text-color);
-    transition: 0.5s linear;
+    background: var(--header-bg);
+    transition: background 0.4s ease, border-color 0.4s ease;
 
 }
 
@@ -127,10 +143,11 @@ header {
 .home {
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(to right, #FFF0F5, #FFFFFF);
+    background: linear-gradient(to right, var(--secondary-color), var(--bg-color));
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(17rem, auto));
     align-items: center;
+    transition: background 0.4s ease;
 }
 
 .home-text h1 {
@@ -214,7 +231,7 @@ header {
 
 .product-container .box {
     position: relative;
-    background: #fff;
+    background: var(--card-bg);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -263,7 +280,7 @@ header {
 .product-container .box .content a {
     padding: 0.5rem 1rem;
     color: #fff;
-    background-color: #333;
+    background-color: var(--header-bg);
     border-radius: 2rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -284,14 +301,15 @@ header {
 .custormers-container .box {
 
     position: relative;
-    border: 1px solid black;
+    border: 1px solid var(--border-color);
     padding: 10px;
     display: flex;
     flex-direction: column;
     border-radius: 0.5rem;
     box-shadow: var(--box-shadow);
     text-align: center;
-
+    background: var(--card-bg);
+    transition: background 0.4s ease, border-color 0.4s ease;
 
 }
 
@@ -355,7 +373,7 @@ header {
 .social a .bx {
     font-size: 24px;
     padding: 10px;
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 50%;
     color: var(--main-color);
     transition: 0.3s all linear;
@@ -405,13 +423,26 @@ header {
     grid-column: 1 / -1;
     text-align: center;
     padding: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--border-color);
     margin-top: 20px;
 }
 
 .footer-bottom p {
     font-size: 0.9rem;
     color: var(--text-color);
+}
+
+/* Dark Mode Toggle Button */
+#dark-mode-toggle {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--bg-color);
+    transition: transform 0.4s ease, color 0.3s ease;
+}
+
+#dark-mode-toggle:hover {
+    transform: rotate(30deg) scale(1.2);
+    color: var(--main-color);
 }
 
 
