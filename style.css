@@ -445,7 +445,47 @@ header {
     color: var(--main-color);
 }
 
+/* ===== Dark Mode — Navbar Visibility Fixes ===== */
 
+/* Navbar links (Home, Our Story, Flavors, Reviews) */
+body.dark-mode .navbar a {
+    color: #f0f0f0;
+}
+
+body.dark-mode .navbar a:hover {
+    color: #ffffff;
+    background-color: var(--main-color);
+}
+
+/* Header icons (cart, search) */
+body.dark-mode .header-icon .bx {
+    color: #f0f0f0;
+}
+
+body.dark-mode .header-icon .bx:hover {
+    color: var(--main-color);
+}
+
+/* Dark mode toggle icon (sun/moon) */
+body.dark-mode #dark-mode-toggle {
+    color: #f0f0f0;
+}
+
+/* Mobile menu icon */
+body.dark-mode #menu-icon {
+    color: #f0f0f0;
+}
+
+/* "View Menu" / "Read More" button — brighter pink in dark mode */
+body.dark-mode .btn {
+    background-color: #FF6B8A;
+    color: #ffffff;
+}
+
+body.dark-mode .btn:hover {
+    background-color: darkgoldenrod;
+    color: #ffffff;
+}
 
 @media(max-width:360px) {
     header {
