@@ -146,7 +146,7 @@
                 
                 <div class="content">
                     <span>Rs. <?php echo $row['price']; ?>/=</span>
-                    <a href="#">Order Now</a>
+                    <a href="checkout.php?flavor=<?php echo $row['name']; ?>&price=<?php echo $row['price']; ?>" class="btn">Order Now</a>
                 </div>
             </div>
             <?php
