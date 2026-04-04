@@ -13,6 +13,7 @@
 <body>
     <!--Navbar-->
     <?php include 'includes/header.php'; ?>
+    <?php include('config/db.php'); ?>
 
     <!--home-->
     <section class="home" id="home">
@@ -128,71 +129,35 @@
         </div>
 
         <!--contai ner-->
-
         <div class="product-container">
+    <?php
+    
+    $sql = "SELECT * FROM flavors";
+    $result = mysqli_query($conn, $sql);
 
-            <!--Box1-->
+    if (mysqli_num_rows($result) > 0) {
+        
+        while($row = mysqli_fetch_assoc($result)) {
+            ?>
             <div class="box">
-                <img src="p1.png" alt="Chocolate Ice Cream">
-                <h3>Double Dark Chocolate</h3>
+                <img src="<?php echo $row['image_path']; ?>" alt="<?php echo $row['name']; ?>">
+                
+                <h3><?php echo $row['name']; ?></h3>
+                
                 <div class="content">
-                    <span>Rs.450/=</span>
+                    <span>Rs. <?php echo $row['price']; ?>/=</span>
                     <a href="#">Order Now</a>
                 </div>
             </div>
+            <?php
+        }
+    } else {
+        echo "<p>No flavors available at the moment.</p>";
+    }
+    ?>
+</div>
 
-            <!--Box2-->
-            <div class="box">
-                <img src="p2.png" alt="Vanilla Ice Cream">
-                <h3>Classic Vanilla Bean</h3>
-                <div class="content">
-                    <span>Rs.400/=</span>
-                    <a href="#">Order Now</a>
-                </div>
-            </div>
-
-            <!--Box3-->
-            <div class="box">
-                <img src="p3.png" alt="Strawberry Ice Cream">
-                <h3>Fresh Strawberry</h3>
-                <div class="content">
-                    <span>Rs.450/=</span>
-                    <a href="#">Order Now</a>
-                </div>
-            </div>
-
-            <!--Box4-->
-            <div class="box">
-                <img src="p4.png" alt="Mint Ice Cream">
-                <h3>Mint Choco Chip</h3>
-                <div class="content">
-                    <span>Rs.500/=</span>
-                    <a href="#">Order Now</a>
-                </div>
-            </div>
-
-            <!--Box5-->
-            <div class="box">
-                <img src="p5.png" alt="Fruit Ice Cream">
-                <h3>Tutti Frutti Mix</h3>
-                <div class="content">
-                    <span>Rs.480/=</span>
-                    <a href="#">Order Now</a>
-                </div>
-            </div>
-
-            <!--Box6-->
-            <div class="box">
-                <img src="p6.png" alt="Sundae">
-                <h3>Royal Sundae</h3>
-                <div class="content">
-                    <span>Rs.850/=</span>
-                    <a href="#">Order Now</a>
-                </div>
-            </div>
-
-
-        </div>
+    
 
 
     </section>
