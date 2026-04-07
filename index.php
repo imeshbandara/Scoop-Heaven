@@ -165,80 +165,52 @@
     <!--Custormers-->
 
     <section class="custormers" id="custormers">
+    <div class="heading">
+        <h2>Our Customer's Reviews</h2>
+    </div>
 
-        <div class="heading">
-            <h2>our custormer's</h2>
-        </div>
-        <!--container-->
-        <div class="custormers-container">
+    <div class="custormers-container">
+        <?php
+        $rev_query = "SELECT * FROM reviews ORDER BY id DESC LIMIT 3";
+        $rev_result = mysqli_query($conn, $rev_query);
 
-            <div class="box">
+        if (mysqli_num_rows($rev_result) > 0) {
+            while($rev = mysqli_fetch_assoc($rev_result)) {
+                ?>
+                <div class="box">
+                    <div class="stars">
+                        <?php 
+                        
+                        for($i=0; $i<$rev['stars']; $i++) {
+                            echo "<i class='bx bx-star'></i>";
+                        }
+                        ?>
+                    </div>
+                    <p><?php echo $rev['message']; ?></p>
+                    <h2><?php echo $rev['name']; ?></h2>
+                    <img src="user-icon.png" alt=""> </div>
+                <?php
+            }
+        } else {
+            echo "<p>No reviews yet. Be the first to review!</p>";
+        }
+        ?>
+    </div>
+</section>
 
-                <div class="stars">
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star-half'></i>
-
-                </div>
-                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit porro quisquam optio sequi labore exercitationem
-                    unde cupiditate est mollitia voluptatum. Laudantium voluptate
-                    explicabo ad assumenda non neque corrupti eveniet voluptatem.
-
-                </p>
-                <h2>Imesh Bandara</h2>
-                <img src="asset/imesh.jpg" alt="">
-
-            </div>
-
-            <div class="box">
-
-                <div class="stars">
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star-half'></i>
-
-                </div>
-                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit porro quisquam optio sequi labore exercitationem
-                    unde cupiditate est mollitia voluptatum. Laudantium voluptate
-                    explicabo ad assumenda non neque corrupti eveniet voluptatem.
-
-                </p>
-                <h2>Alexandra Daddario</h2>
-                <img src="asset/alexandra.jpg" alt="">
-
-            </div>
-
-            <div class="box">
-
-                <div class="stars">
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-                    <i class='bx  bx-star'></i>
-
-
-                </div>
-                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit porro quisquam optio sequi labore exercitationem
-                    unde cupiditate est mollitia voluptatum. Laudantium voluptate
-                    explicabo ad assumenda non neque corrupti eveniet voluptatem.
-
-                </p>
-                <h2>Zark Zuckerberg</h2>
-                <img src="asset/mark.jpg" alt="">
-
-            </div>
-
-        </div>
-
-    </section>
-
+<section class="add-review" style="padding: 50px 10%; background: #fef4f8;">
+    <h3>Leave a Review</h3>
+    <form action="submit_review.php" method="POST" style="max-width: 500px; display: flex; flex-direction: column; gap: 10px;">
+        <input type="text" name="rev_name" placeholder="Your Name" required style="padding: 10px;">
+        <textarea name="rev_msg" placeholder="Your Feedback" required style="padding: 10px;"></textarea>
+        <select name="rev_stars" style="padding: 10px;">
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+        </select>
+        <button type="submit" name="submit_rev" class="btn">Post Review</button>
+    </form>
+</section>
     <!--footer section-->
 
     <?php include 'includes/footer.php'; ?>
