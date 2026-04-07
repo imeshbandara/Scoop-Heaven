@@ -25,7 +25,7 @@
             <a href="#products" class="btn">View Menu</a>
         </div>
         <div class="home-img">
-            <img src="main.png" alt="">
+            <img src="asset/main.png" alt="">
         </div>
 
     </section>
@@ -33,7 +33,7 @@
 
     <section class="about" id="about">
         <div class="about-img">
-            <img src="about.png" alt="">
+            <img src="asset/about.png" alt="">
         </div>
         <div class="about-text">
             <h2>Our Sweet Story</h2>
@@ -189,7 +189,7 @@
 
                 </p>
                 <h2>Imesh Bandara</h2>
-                <img src="imesh.jpg" alt="">
+                <img src="asset/imesh.jpg" alt="">
 
             </div>
 
@@ -209,7 +209,7 @@
 
                 </p>
                 <h2>Alexandra Daddario</h2>
-                <img src="alexandra.jpg" alt="">
+                <img src="asset/alexandra.jpg" alt="">
 
             </div>
 
@@ -231,7 +231,7 @@
 
                 </p>
                 <h2>Zark Zuckerberg</h2>
-                <img src="mark.jpg" alt="">
+                <img src="asset/mark.jpg" alt="">
 
             </div>
 

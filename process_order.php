@@ -14,7 +14,7 @@ if (isset($_POST['place_order'])) {
             VALUES ('$customer_name', '$phone', '$address', '$flavor', '$total')";
 
     if (mysqli_query($conn, $sql)) {
-        // Order එක සාර්ථක නම් "Thank You" message එකක් පෙන්නනවා
+    
         echo "<script>
                 alert('Order Placed Successfully! We will deliver your ice cream soon.');
                 window.location.href='index.php';
