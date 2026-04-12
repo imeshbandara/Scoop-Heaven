@@ -27,7 +27,18 @@ include('../config/db.php'); // config folder එක පිටත ඇති න�
                     <td>{$row['flavor_name']}</td>
                     <td>1</td> <td>Rs. {$row['total_price']}</td>
                     <td>{$row['address']}</td>
-                    <td><button>Pending</button></td>
+                    <td>
+                <div style='display:flex; gap:5px;'>
+                    <a href='update_status.php?id={$row['order_id']}&status=Completed' 
+                       style='background:$btnColor; color:white; padding:5px 10px; border-radius:5px; font-size:12px;'>
+                       $status
+                    </a>
+                    <a href='update_status.php?id={$row['order_id']}&status=Cancelled' 
+                       style='background:#eee; color:#333; padding:5px 10px; border-radius:5px; font-size:12px;'>
+                       Cancel
+                    </a>
+                </div>
+            </td>
                   </tr>";
         }
         ?>
