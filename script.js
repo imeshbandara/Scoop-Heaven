@@ -82,4 +82,26 @@ darkModeToggle.addEventListener('click', () => {
     } else {
         initOurServiceReveal();
     }
-})();
+})();
+
+// ===== Live Search Logic =====
+const searchInput = document.querySelector('#flavor-search');
+const productContainer = document.querySelector('.product-container');
+
+if (searchInput && productContainer) {
+    searchInput.addEventListener('keyup', function() {
+        let searchTerm = this.value;
+
+        // AJAX Request
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'search_flavors.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        
+        xhr.onload = function() {
+            if(this.status == 200) {
+                productContainer.innerHTML = this.responseText;
+            }
+        }
+        xhr.send('query=' + searchTerm);
+    });
+}

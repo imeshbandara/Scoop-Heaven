@@ -22,8 +22,8 @@
 
         <!--search-box-->
         <div class="search-box">
-            <input type="search" placeholder="search here...">
-        </div>
+    <input type="search" id="flavor-search" placeholder="Search for a flavor (e.g. Chocolate)...">
+</div>
 
 
     </header>
