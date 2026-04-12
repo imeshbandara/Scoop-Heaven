@@ -18,12 +18,13 @@ if (isset($_POST['place_order'])) {
             VALUES ('$customer_name', '$phone', '$address', '$flavor', '$final_total')";
 
     if (mysqli_query($conn, $sql)) {
+    // Get the ID of the order we just inserted
+    $order_id = mysqli_insert_id($conn);
     
-        echo "<script>
-                alert('Order Placed Successfully! We will deliver your ice cream soon.');
-                window.location.href='index.php';
-              </script>";
-    } else {
+    // Redirect to success page with details
+    header("Location: success.php?id=$order_id&name=" . urlencode($customer_name) . "&flavor=" . urlencode($flavor) . "&total=$final_total");
+    exit();
+} else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 }
