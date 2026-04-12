@@ -6,6 +6,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 include('../config/db.php');
+include('admin_nav.php');
 
 if(isset($_POST['submit'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);

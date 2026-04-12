@@ -5,6 +5,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 include('../config/db.php');
+include('admin_nav.php');
 ?>
 
 <?php 
