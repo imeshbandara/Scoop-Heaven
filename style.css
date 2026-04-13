@@ -988,3 +988,45 @@ table td {
     text-align: center;
     display: inline-block;
 }
+
+/* Button Glow Effect */
+.btn {
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--main-color);
+    box-shadow: 0 8px 15px rgba(255, 133, 162, 0.4);
+    transform: scale(1.05);
+}
+
+/* Admin Nav bar enhancement */
+.admin-nav {
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--main-color);
+}
+
+.admin-nav a {
+    position: relative;
+    padding: 5px 0;
+}
+
+.admin-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--main-color);
+    transition: 0.3s;
+}
+
+.admin-nav a:hover::after {
+    width: 100%;
+}
