@@ -1030,3 +1030,22 @@ table td {
 .admin-nav a:hover::after {
     width: 100%;
 }
+
+/* Animated Search Box */
+.search-box {
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: 0 0 20px 20px;
+    padding: 10px 100px;
+}
+
+.search-box input {
+    border: 2px solid var(--secondary-color);
+    border-radius: 30px;
+    padding: 15px 25px;
+    background: var(--secondary-color);
+}
+
+.search-box input:focus {
+    border-color: var(--main-color);
+    background: var(--bg-color);
+}
