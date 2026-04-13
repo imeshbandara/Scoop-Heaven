@@ -949,3 +949,42 @@ body.dark-mode #our-service .service-feature-icon {
     border: 1px solid var(--main-color);
     font-size: 0.9rem;
 }
+
+/* Modern Admin Tables */
+table {
+    width: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: var(--box-shadow);
+    margin: 20px 0;
+}
+
+table tr {
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background-color: var(--header-bg) !important;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 15px !important;
+}
+
+table td {
+    padding: 15px !important;
+    background-color: var(--card-bg);
+    font-size: 14px;
+}
+
+/* Status Labels */
+.status-pill {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    display: inline-block;
+}
