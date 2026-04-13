@@ -123,6 +123,55 @@
     </section>
 
     <!--products-->
+
+    <section class="trending" id="trending" style="padding-bottom: 20px;">
+    <div class="heading">
+        <span style="color: var(--main-color); font-weight: 600; text-transform: uppercase;">Most Loved</span>
+        <h2>Trending Now</h2>
+    </div>
+
+    <div class="product-container">
+        <?php
+        // Query to find the top 3 flavors based on order count
+        $trending_sql = "SELECT flavor_name, COUNT(*) as total_orders 
+                         FROM orders 
+                         GROUP BY flavor_name 
+                         ORDER BY total_orders DESC 
+                         LIMIT 3";
+        $trending_result = mysqli_query($conn, $trending_sql);
+
+        if (mysqli_num_rows($trending_result) > 0) {
+            while($t_row = mysqli_fetch_assoc($trending_result)) {
+                $f_name = $t_row['flavor_name'];
+                // Fetch the image and price from the flavors table for this specific name
+                $details_sql = "SELECT * FROM flavors WHERE name = '$f_name' LIMIT 1";
+                $details_res = mysqli_query($conn, $details_sql);
+                
+                if($details = mysqli_fetch_assoc($details_res)) {
+                    ?>
+                    <div class="box" style="border: 2px solid var(--main-color);">
+                        <div style="position: absolute; top: 10px; right: 10px; background: gold; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 10;">
+                            🔥 Bestseller
+                        </div>
+                        <img src="<?php echo $details['image_path']; ?>" alt="<?php echo $details['name']; ?>">
+                        <h3><?php echo $details['name']; ?></h3>
+                        <div class="content">
+                            <span>Rs. <?php echo $details['price']; ?>/=</span>
+                            <a href="checkout.php?flavor=<?php echo urlencode($details['name']); ?>&price=<?php echo $details['price']; ?>&image=<?php echo urlencode($details['image_path']); ?>" class="btn">Order Now</a>
+                        </div>
+                    </div>
+                    <?php
+                }
+            }
+        } else {
+            echo "<p style='text-align:center; width:100%;'>Start ordering to see what's trending!</p>";
+        }
+        ?>
+    </div>
+</section>
+
+<hr style="border: 0; height: 1px; background: #eee; margin: 0 100px;">
+
     <section class="products" id="products">
         <div class="heading">
             <h2>Our Popular Flavors</h2>
