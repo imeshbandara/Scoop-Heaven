@@ -908,3 +908,44 @@ body.dark-mode #our-service .service-feature-icon {
         font-size: 1.8rem;
     }
 }
+
+/* Enhanced Product Boxes */
+.product-container .box {
+    border: 1px solid rgba(255, 133, 162, 0.1);
+    background: var(--card-bg);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.product-container .box:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(255, 133, 162, 0.3);
+    border-color: var(--main-color);
+}
+
+/* Trending Specific Styling */
+.trending .box {
+    position: relative;
+    overflow: hidden;
+}
+
+.trending .box::before {
+    content: 'TOP CHOICE';
+    position: absolute;
+    top: 15px;
+    left: -30px;
+    background: var(--main-color);
+    color: white;
+    padding: 5px 35px;
+    transform: rotate(-45deg);
+    font-size: 10px;
+    font-weight: 700;
+    z-index: 5;
+}
+
+/* Modern Price Tag */
+.product-container .box .content span {
+    background: var(--secondary-color);
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    font-size: 0.9rem;
+}
