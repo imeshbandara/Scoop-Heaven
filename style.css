@@ -1049,3 +1049,159 @@ table td {
     border-color: var(--main-color);
     background: var(--bg-color);
 }
+
+/* ===== Modern Checkout Overhaul ===== */
+.checkout-container {
+    padding: 120px 10% 50px;
+    background: var(--bg-color);
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* Left Panel: Form */
+.checkout-panel {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: var(--box-shadow);
+}
+
+.checkout-intro h2 {
+    font-size: 2rem;
+    color: var(--main-color);
+    margin-bottom: 10px;
+}
+
+.checkout-form .input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.checkout-form .input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--main-color);
+}
+
+.checkout-form input, 
+.checkout-form textarea {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 12px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    outline: none;
+    transition: 0.3s;
+}
+
+.checkout-form input:focus {
+    border-color: var(--main-color);
+}
+
+/* Right Panel: Summary Card */
+.summary-panel {
+    position: sticky;
+    top: 100px;
+}
+
+.hero-card {
+    position: relative;
+    height: 250px;
+    border-radius: 25px;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.hero-layer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.hero-card h3 {
+    position: relative;
+    font-size: 1.8rem;
+    z-index: 2;
+}
+
+.summary-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: var(--box-shadow);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.total-row {
+    border: none;
+    font-size: 1.4rem;
+    color: var(--main-color);
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+    .summary-panel {
+        position: static;
+        order: -1; /* Summary shows first on mobile */
+    }
+}
+/* Specific overrides for Checkout to fix the alignment in the screenshot */
+.checkout-container {
+    padding-top: 150px; /* Moves content below the fixed header */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.checkout-panel, .summary-panel {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}
+
+.checkout-form input, .checkout-form textarea {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.confirm-btn {
+    background: var(--main-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
