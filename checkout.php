@@ -1,4 +1,5 @@
 <?php 
+
 include('config/db.php'); 
 include('includes/header.php'); 
 
@@ -8,10 +9,20 @@ $image_path = !empty($_GET['image']) ? urldecode($_GET['image']) : 'asset/main.p
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css"> </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Scoop Heaven</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
 <body>
+
+
 
 <div class="checkout-container">
     <div class="checkout-grid">

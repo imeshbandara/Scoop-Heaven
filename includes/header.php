@@ -14,11 +14,11 @@
         </ul>
 
         <!--iceons-->
-        <div class="header-icon">
-            <i class='bx bx-moon' id="dark-mode-toggle"></i>
-            <i class='bx  bx-cart'></i>
-            <i class='bx  bx-search' id="search-icon"></i>
-        </div>
+       <div class="header-icon">
+    <i class='bx bx-moon' id="dark-mode-toggle" style="color: white; font-size: 24px; cursor: pointer;"></i>
+    <i class='bx bx-cart' style="color: white; font-size: 24px; cursor: pointer; margin-left: 15px;"></i>
+    <i class='bx bx-search' id="search-icon" style="color: white; font-size: 24px; cursor: pointer; margin-left: 15px;"></i>
+</div>
 
         <!--search-box-->
         <div class="search-box">

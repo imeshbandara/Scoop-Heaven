@@ -1171,10 +1171,12 @@ table td {
     }
 }
 /* Specific overrides for Checkout to fix the alignment in the screenshot */
+
 .checkout-container {
-    padding-top: 150px; /* Moves content below the fixed header */
-    max-width: 1200px;
-    margin: 0 auto;
+    margin-top: 100px; 
+    padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .checkout-panel, .summary-panel {
@@ -1204,4 +1206,29 @@ table td {
     font-weight: bold;
     cursor: pointer;
     margin-top: 20px;
+}
+
+/* Fix Header Icons visibility and layout */
+.header-icon {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+    z-index: 10001;
+}
+
+.header-icon .bx {
+    color: #ffffff; /* Forces white color */
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.header-icon .bx:hover {
+    color: var(--main-color);
+    transform: scale(1.1);
+}
+
+/* Ensure icons show up in Dark Mode too */
+body.dark-mode .header-icon .bx {
+    color: #ffffff;
 }
