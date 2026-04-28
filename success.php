@@ -1,23 +1,72 @@
-<?php include('includes/header.php'); ?>
+<?php
+$order_id = htmlspecialchars($_GET['id'] ?? '0000');
+$customer_name = htmlspecialchars($_GET['name'] ?? 'Guest');
+$flavor_name = htmlspecialchars($_GET['flavor'] ?? 'your favorite scoop');
+$total_amount = floatval($_GET['total'] ?? 0);
+$payment_method = htmlspecialchars($_GET['payment'] ?? 'Cash on Delivery');
+?>
 
-<div class="success-container" style="padding: 150px 10%; text-align: center; min-height: 80vh;">
-    <div class="success-card" style="background: var(--card-bg); padding: 40px; border-radius: 30px; box-shadow: var(--box-shadow); max-width: 600px; margin: 0 auto;">
-        <i class='bx bxs-check-circle' style="font-size: 80px; color: #4CAF50;"></i>
-        <h2 style="margin: 20px 0; color: var(--main-color);">Order Confirmed!</h2>
-        
-        <p style="font-size: 1.1rem; color: var(--text-color);">
-            Thank you, <strong><?php echo htmlspecialchars($_GET['name']); ?></strong>! <br>
-            Your <strong><?php echo htmlspecialchars($_GET['flavor']); ?></strong> is being prepared.
-        </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Scoop Heaven</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <?php include('includes/header.php'); ?>
 
-        <div class="order-details" style="margin: 30px 0; padding: 20px; border: 2px dashed var(--main-color); border-radius: 15px; text-align: left;">
-            <p><strong>Order ID:</strong> #SH-<?php echo htmlspecialchars($_GET['id']); ?></p>
-            <p><strong>Total Amount:</strong> Rs. <?php echo number_format($_GET['total'], 2); ?></p>
-            <p><strong>Payment Method:</strong> Cash on Delivery</p>
+    <main class="success-page">
+        <div class="success-confetti" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
-        <a href="index.php" class="btn">Back to Home</a>
-    </div>
-</div>
+        <section class="success-card">
+            <div class="success-badge" aria-hidden="true">
+                <i class='bx bx-check'></i>
+            </div>
 
-<?php include('includes/footer.php'); ?>
+            <h1>Order Confirmed!</h1>
+            <p class="success-message">
+                Thank you, <strong><?php echo $customer_name; ?></strong>! Your
+                <strong><?php echo $flavor_name; ?></strong> is being freshly prepared and will be on its way soon.
+            </p>
+
+            <div class="order-details">
+                <h2>Your Order Details</h2>
+
+                <div class="detail-row">
+                    <span class="detail-label">Order ID</span>
+                    <span class="detail-value">#SH-<?php echo $order_id; ?></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Total Amount</span>
+                    <span class="detail-value">Rs. <?php echo number_format($total_amount, 2); ?></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method</span>
+                    <span class="detail-value"><?php echo $payment_method; ?></span>
+                </div>
+            </div>
+
+            <div class="success-actions">
+                <a href="index.php" class="success-home-btn">
+                    <i class='bx bx-home-heart'></i>
+                    Back to Home
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <?php include('includes/footer.php'); ?>
+</body>
+</html>
