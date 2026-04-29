@@ -1,11 +1,69 @@
-<?php 
+<?php
+session_start();
 
-include('config/db.php'); 
-include('includes/header.php'); 
+include('config/db.php');
+include('includes/header.php');
 
-$selected_flavor = $_GET['flavor'] ?? 'Ice Cream';
-$price = floatval($_GET['price'] ?? 0);
-$image_path = !empty($_GET['image']) ? urldecode($_GET['image']) : 'asset/main.png';
+// Always source checkout from the session cart.
+// Backwards compatibility: if someone still hits the old URL
+// checkout.php?flavor=...&price=...&image=..., we convert that into a
+// 1-item session cart (only when cart is empty).
+if (isset($_GET['flavor'], $_GET['price'])) {
+    $selected_flavor = (string)($_GET['flavor'] ?? '');
+    $price = (float)($_GET['price'] ?? 0);
+    $image_path = !empty($_GET['image']) ? (string)urldecode($_GET['image']) : 'asset/main.png';
+
+    if ($selected_flavor !== '' && $price > 0) {
+        $safeFlavor = mysqli_real_escape_string($conn, $selected_flavor);
+        $lookupRes = mysqli_query($conn, "SELECT id, price, image_path FROM flavors WHERE name = '$safeFlavor' LIMIT 1");
+        $lookupRow = $lookupRes ? mysqli_fetch_assoc($lookupRes) : null;
+
+        $flavorId = (int)($lookupRow['id'] ?? 0);
+        $unitPrice = (float)($lookupRow['price'] ?? $price);
+        $img = (string)($lookupRow['image_path'] ?? $image_path);
+
+        if ($flavorId <= 0) {
+            $flavorId = (int)abs(crc32($selected_flavor));
+        }
+
+        if ($img !== '' && strpos($img, '/') === false) {
+            $img = 'asset/' . $img;
+        }
+
+        if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+
+        $key = (string)$flavorId;
+        if (!isset($_SESSION['cart'][$key])) {
+            $_SESSION['cart'][$key] = [
+                'id' => (int)$flavorId,
+                'name' => $selected_flavor,
+                'price' => $unitPrice,
+                'quantity' => 1,
+                'image' => $img,
+            ];
+        } else {
+            $_SESSION['cart'][$key]['quantity'] = (int)($_SESSION['cart'][$key]['quantity'] ?? 0) + 1;
+        }
+    }
+}
+
+$cart = $_SESSION['cart'] ?? [];
+$cartItems = is_array($cart) ? array_values($cart) : [];
+$cartCount = 0;
+$subtotal = 0.0;
+
+foreach ($cartItems as $item) {
+    $cartCount += (int)($item['quantity'] ?? 0);
+    $subtotal += ((float)($item['price'] ?? 0)) * ((int)($item['quantity'] ?? 0));
+}
+
+$grandTotal = $subtotal;
+$firstItem = $cartItems[0] ?? null;
+$selected_flavor = $firstItem ? (string)($firstItem['name'] ?? '') : 'Ice Cream';
+$price = $firstItem ? (float)($firstItem['price'] ?? 0) : 0;
+$image_path = $firstItem ? (string)($firstItem['image'] ?? 'asset/main.png') : 'asset/main.png';
 ?>
 
 <!DOCTYPE html>
@@ -34,8 +92,6 @@ $image_path = !empty($_GET['image']) ? urldecode($_GET['image']) : 'asset/main.p
             </div>
 
             <form action="process_order.php" method="POST" class="checkout-form">
-                <input type="hidden" name="flavor_name" value="<?php echo htmlspecialchars($selected_flavor); ?>">
-                <input type="hidden" name="price" value="<?php echo $price; ?>">
 
                 <div class="input-group">
                     <input type="text" name="cust_name" placeholder="Full Name" required>
@@ -49,37 +105,32 @@ $image_path = !empty($_GET['image']) ? urldecode($_GET['image']) : 'asset/main.p
                     <textarea name="cust_address" placeholder="Delivery Address" rows="3" required></textarea>
                 </div>
 
-                <div class="quantity-section" style="margin-top:20px;">
-                    <label>Quantity:</label>
-                    <input type="number" name="quantity" id="qty" value="1" min="1" onchange="calculateTotal()" style="width: 60px; padding: 5px;">
-                </div>
-
                 <button type="submit" name="place_order" class="confirm-btn">Confirm & Pay (COD)</button>
             </form>
         </section>
 
         <aside class="summary-panel">
-            <div class="hero-card" style="background-image: url('<?php echo $image_path; ?>'); background-size: cover; height: 200px; border-radius: 15px; position: relative; display: flex; align-items: flex-end; padding: 20px; color: white;">
+            <div class="hero-card" style="background-image: url('<?php echo htmlspecialchars($image_path); ?>'); background-size: cover; height: 200px; border-radius: 15px; position: relative; display: flex; align-items: flex-end; padding: 20px; color: white;">
                 <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); border-radius: 15px;"></div>
-                <h3 style="position: relative; z-index: 2;"><?php echo htmlspecialchars($selected_flavor); ?></h3>
+                <h3 style="position: relative; z-index: 2;">
+                    <?php echo empty($cartItems) ? 'Your Cart' : (count($cartItems) > 1 ? 'Mixed Flavors' : htmlspecialchars($selected_flavor)); ?>
+                </h3>
             </div>
 
             <div class="summary-card" style="margin-top: 20px;">
-                <p>Unit Price: <strong>Rs. <?php echo number_format($price, 2); ?></strong></p>
-                <h3 style="color: var(--main-color); margin-top: 10px;">Total Amount: Rs. <span id="display_total"><?php echo number_format($price, 2); ?></span></h3>
+                <p>Items in cart: <strong><?php echo (int)$cartCount; ?></strong></p>
+                <h3 style="color: var(--main-color); margin-top: 10px;">
+                    Total Amount: Rs. <span><?php echo number_format($grandTotal, 2); ?></span>
+                </h3>
+
+                <?php if (empty($cartItems)): ?>
+                    <p style="margin-top: 10px; color: #666;">Your cart is empty.</p>
+                <?php endif; ?>
             </div>
         </aside>
 
     </div>
 </div>
-
-<script>
-function calculateTotal() {
-    const unitPrice = <?php echo $price; ?>;
-    let qty = document.getElementById('qty').value;
-    document.getElementById('display_total').innerText = (unitPrice * qty).toFixed(2);
-}
-</script>
 
 <?php include('includes/footer.php'); ?>
 </body>

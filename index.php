@@ -153,11 +153,29 @@
                         <div style="position: absolute; top: 10px; right: 10px; background: gold; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 10;">
                             🔥 Bestseller
                         </div>
-                        <img src="<?php echo $details['image_path']; ?>" alt="<?php echo $details['name']; ?>">
+                        <?php
+                        $tImg = $details['image_path'] ?? '';
+                        if ($tImg !== '' && strpos($tImg, '/') === false) {
+                            $tImg = 'asset/' . $tImg;
+                        }
+                        if ($tImg === '') {
+                            $tImg = 'asset/main.png';
+                        }
+                        ?>
+                        <img src="<?php echo $tImg; ?>" alt="<?php echo $details['name']; ?>">
                         <h3><?php echo $details['name']; ?></h3>
                         <div class="content">
                             <span>Rs. <?php echo $details['price']; ?>/=</span>
-                            <a href="checkout.php?flavor=<?php echo urlencode($details['name']); ?>&price=<?php echo $details['price']; ?>&image=<?php echo urlencode($details['image_path']); ?>" class="btn">Order Now</a>
+                            <button
+                                type="button"
+                                class="btn add-to-cart"
+                                data-id="<?php echo (int)($details['id'] ?? 0); ?>"
+                                data-name="<?php echo htmlspecialchars($details['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                data-price="<?php echo (float)($details['price'] ?? 0); ?>"
+                                data-image="<?php echo htmlspecialchars($tImg, ENT_QUOTES, 'UTF-8'); ?>"
+                            >
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
                     <?php
@@ -207,6 +225,9 @@
             if ($img !== '' && strpos($img, '/') === false) {
                 $img = 'asset/' . $img;
             }
+                if ($img === '') {
+                    $img = 'asset/main.png';
+                }
             ?>
             <div class="box">
                 <img src="<?php echo $img; ?>" alt="<?php echo $row['name']; ?>">
@@ -215,7 +236,16 @@
                 
                 <div class="content">
                     <span>Rs. <?php echo $row['price']; ?>/=</span>
-                    <a href="checkout.php?flavor=<?php echo urlencode($row['name']); ?>&price=<?php echo $row['price']; ?>&image=<?php echo urlencode($img); ?>" class="btn">Order Now</a>
+                    <button
+                        type="button"
+                        class="btn add-to-cart"
+                        data-id="<?php echo (int)($row['id'] ?? 0); ?>"
+                        data-name="<?php echo htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                        data-price="<?php echo (float)($row['price'] ?? 0); ?>"
+                        data-image="<?php echo htmlspecialchars($img, ENT_QUOTES, 'UTF-8'); ?>"
+                    >
+                        Add to Cart
+                    </button>
                 </div>
             </div>
             <?php
@@ -281,6 +311,83 @@
     </form>
 </section>
     <!--footer section-->
+
+    <script>
+        (function () {
+            function ensureToast() {
+                let el = document.querySelector('.toast');
+                if (el) return el;
+                el = document.createElement('div');
+                el.className = 'toast';
+                document.body.appendChild(el);
+                return el;
+            }
+
+            function showToast(text) {
+                const toastEl = ensureToast();
+                toastEl.textContent = text;
+                toastEl.classList.add('show');
+                window.clearTimeout(showToast.__t);
+                showToast.__t = window.setTimeout(() => {
+                    toastEl.classList.remove('show');
+                }, 2200);
+            }
+
+            function updateCartCount(cartCount) {
+                const countEl = document.getElementById('cart-count');
+                if (countEl) countEl.textContent = String(cartCount ?? 0);
+            }
+
+            async function postCartAction(payload) {
+                const res = await fetch('cart_handler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('cart_handler.php non-JSON response:', text);
+                    return { success: false, message: 'Cart request failed.' };
+                }
+            }
+
+            document.addEventListener('click', async function (e) {
+                const addBtn = e.target.closest('.add-to-cart');
+                if (!addBtn) return;
+
+                const id = addBtn.dataset.id;
+                const name = addBtn.dataset.name;
+                const price = addBtn.dataset.price;
+                const image = addBtn.dataset.image;
+
+                try {
+                    console.log('Add to cart clicked:', { id, name, price, image });
+                    const data = await postCartAction({
+                        action: 'add',
+                        id: id,
+                        name: name,
+                        price: price,
+                        image: image,
+                        quantity: 1
+                    });
+
+                    console.log('cart_handler response:', data);
+                    if (data && data.success) {
+                        updateCartCount(data.cartCount);
+                        showToast('Item added to cart!');
+                    } else {
+                        showToast((data && data.message) ? data.message : 'Unable to add to cart.');
+                    }
+                } catch (err) {
+                    console.error('Cart AJAX error:', err);
+                    showToast('Network error. Please try again.');
+                }
+            });
+        })();
+    </script>
 
     <?php include 'includes/footer.php'; ?>
 

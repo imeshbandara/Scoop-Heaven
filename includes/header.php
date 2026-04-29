@@ -1,3 +1,16 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$cartCount = 0;
+if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cartCount += (int)($item['quantity'] ?? 0);
+    }
+}
+?>
+
 <header class="site-header">
     <a href="index.php" class="brand">
         <img src="logo.png" alt="Scoop Heaven">
@@ -29,7 +42,10 @@
 
         <div class="header-icon" aria-label="Header actions">
             <i class='bx bx-moon' id="dark-mode-toggle" aria-label="Toggle dark mode" role="button" tabindex="0"></i>
-            <i class='bx bx-cart' aria-label="Cart" role="button" tabindex="0"></i>
+            <a href="cart.php" class="cart-link" aria-label="Cart" role="button" tabindex="0">
+                <i class='bx bx-cart' aria-hidden="true"></i>
+                <span id="cart-count" class="cart-count-badge"><?php echo (int)$cartCount; ?></span>
+            </a>
             <i class='bx bx-search' id="search-icon" aria-label="Search" role="button" tabindex="0"></i>
         </div>
     </div>
