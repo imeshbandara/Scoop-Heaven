@@ -181,27 +181,43 @@
         <div class="product-container">
     <?php
     
-    $sql = "SELECT * FROM flavors";
+    // Popular flavors (keeps the same card UI/CSS; selects by your p2..p6 images in order)
+    // Works whether DB stores 'p2.png' or 'asset/p2.png'.
+    $sql = "SELECT * FROM flavors
+            WHERE image_path IN ('p2.png','p3.png','p4.png','p5.png','p6.png',
+                                'asset/p2.png','asset/p3.png','asset/p4.png','asset/p5.png','asset/p6.png')
+            ORDER BY FIELD(image_path,
+                'p2.png','asset/p2.png',
+                'p3.png','asset/p3.png',
+                'p4.png','asset/p4.png',
+                'p5.png','asset/p5.png',
+                'p6.png','asset/p6.png'
+            )";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
         
         while($row = mysqli_fetch_assoc($result)) {
+            $img = $row['image_path'] ?? '';
+            // If DB stores just 'p2.png', load it from /asset/
+            if ($img !== '' && strpos($img, '/') === false) {
+                $img = 'asset/' . $img;
+            }
             ?>
             <div class="box">
-                <img src="<?php echo $row['image_path']; ?>" alt="<?php echo $row['name']; ?>">
+                <img src="<?php echo $img; ?>" alt="<?php echo $row['name']; ?>">
                 
                 <h3><?php echo $row['name']; ?></h3>
                 
                 <div class="content">
                     <span>Rs. <?php echo $row['price']; ?>/=</span>
-                    <a href="checkout.php?flavor=<?php echo urlencode($row['name']); ?>&price=<?php echo $row['price']; ?>&image=<?php echo urlencode($row['image_path']); ?>" class="btn">Order Now</a>
+                    <a href="checkout.php?flavor=<?php echo urlencode($row['name']); ?>&price=<?php echo $row['price']; ?>&image=<?php echo urlencode($img); ?>" class="btn">Order Now</a>
                 </div>
             </div>
             <?php
         }
     } else {
-        echo "<p>No flavors available at the moment.</p>";
+        echo "<p>No popular flavors available at the moment.</p>";
     }
     ?>
 </div>
