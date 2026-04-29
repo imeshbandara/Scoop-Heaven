@@ -181,17 +181,21 @@
         <div class="product-container">
     <?php
     
-    // Popular flavors (keeps the same card UI/CSS; selects by your p2..p6 images in order)
-    // Works whether DB stores 'p2.png' or 'asset/p2.png'.
+    // Popular flavors for the homepage in fixed display order.
     $sql = "SELECT * FROM flavors
-            WHERE image_path IN ('p2.png','p3.png','p4.png','p5.png','p6.png',
-                                'asset/p2.png','asset/p3.png','asset/p4.png','asset/p5.png','asset/p6.png')
-            ORDER BY FIELD(image_path,
-                'p2.png','asset/p2.png',
-                'p3.png','asset/p3.png',
-                'p4.png','asset/p4.png',
-                'p5.png','asset/p5.png',
-                'p6.png','asset/p6.png'
+            WHERE name IN (
+                'Classic Vanilla Bean',
+                'Fresh Strawberry',
+                'Mint Chocolate Chip',
+                'Tutti Frutti Mix',
+                'Royal Hot Fudge Sundae'
+            )
+            ORDER BY FIELD(name,
+                'Classic Vanilla Bean',
+                'Fresh Strawberry',
+                'Mint Chocolate Chip',
+                'Tutti Frutti Mix',
+                'Royal Hot Fudge Sundae'
             )";
     $result = mysqli_query($conn, $sql);
 
