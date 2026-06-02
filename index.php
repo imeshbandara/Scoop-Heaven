@@ -378,6 +378,9 @@
                     if (data && data.success) {
                         updateCartCount(data.cartCount);
                         showToast('Item added to cart!');
+                        if (window.openCartSidebar) {
+                            window.openCartSidebar();
+                        }
                     } else {
                         showToast((data && data.message) ? data.message : 'Unable to add to cart.');
                     }

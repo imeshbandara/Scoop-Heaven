@@ -132,6 +132,16 @@ try {
         $response['subtotal'] = $totals['subtotal'];
         $response['grandTotal'] = $totals['grandTotal'];
         $response['items'] = array_values($_SESSION['cart']);
+    } elseif ($action === 'get') {
+        $count = cartCount($_SESSION['cart']);
+        $totals = cartTotals($_SESSION['cart']);
+
+        $response['success'] = true;
+        $response['message'] = 'Cart retrieved.';
+        $response['cartCount'] = $count;
+        $response['subtotal'] = $totals['subtotal'];
+        $response['grandTotal'] = $totals['grandTotal'];
+        $response['items'] = array_values($_SESSION['cart']);
     } else {
         throw new Exception('Unsupported action.');
     }
