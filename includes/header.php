@@ -80,7 +80,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
     const cartLink = document.querySelector('.cart-link');
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2200);
     }
 
-    // Export helpers globally so index.php can access them
+    // Export helpers globally
     window.openCartSidebar = function() {
         if (cartSidebar && cartOverlay) {
             cartSidebar.classList.add('active');
@@ -287,5 +287,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+})();
 </script>
