@@ -13,13 +13,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     }
 }
 ?>
-<script>
-    (function() {
-        if (localStorage.getItem('darkMode') === 'enabled') {
-            document.body.classList.add('dark-mode');
-        }
-    })();
-</script>
 
 <header class="site-header">
     <a href="index.php" class="brand">
@@ -54,7 +47,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             <i class='bx bx-moon' id="dark-mode-toggle" aria-label="Toggle dark mode" role="button" tabindex="0"></i>
             <a href="cart.php" class="cart-link" aria-label="Cart" role="button" tabindex="0">
                 <i class='bx bx-cart' aria-hidden="true"></i>
-                <span id="cart-count" class="cart-count-badge" style="<?php echo ($cartCount > 0) ? '' : 'display: none;'; ?>"><?php echo (int)$cartCount; ?></span>
+                <span id="cart-count" class="cart-count-badge"><?php echo (int)$cartCount; ?></span>
             </a>
             <i class='bx bx-search' id="search-icon" aria-label="Search" role="button" tabindex="0"></i>
         </div>
@@ -138,9 +131,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'get' })
             });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
             const data = await response.json();
             if (data && data.success) {
                 renderSidebarCart(data);
@@ -154,13 +144,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         // Update navbar count badge on the page
         const cartCountBadge = document.getElementById('cart-count');
         if (cartCountBadge) {
-            const count = parseInt(data.cartCount ?? 0);
-            cartCountBadge.textContent = count;
-            if (count > 0) {
-                cartCountBadge.style.display = 'inline-flex';
-            } else {
-                cartCountBadge.style.display = 'none';
-            }
+            cartCountBadge.textContent = data.cartCount;
         }
 
         // Render items inside the scrollable container
@@ -224,9 +208,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
             return await res.json();
         } catch (error) {
             console.error('Error posting cart action:', error);

@@ -64,7 +64,7 @@ $grandTotal = $subtotal;
                                 <tr data-id="<?php echo $id; ?>">
                                     <td>
                                         <div class="cart-item">
-                                            <img class="cart-item__img" src="<?php echo htmlspecialchars($image); ?>" alt="">
+                                             <img class="cart-item__img" src="<?php echo htmlspecialchars($image); ?>" alt="" loading="lazy" onerror="this.onerror=null; this.src='asset/main.png';">
                                             <div class="cart-item__meta">
                                                 <div class="cart-item__name"><?php echo htmlspecialchars($name); ?></div>
                                             </div>

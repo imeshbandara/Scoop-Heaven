@@ -344,15 +344,7 @@
 
             function updateCartCount(cartCount) {
                 const countEl = document.getElementById('cart-count');
-                if (countEl) {
-                    const count = parseInt(cartCount ?? 0);
-                    countEl.textContent = count;
-                    if (count > 0) {
-                        countEl.style.display = 'inline-flex';
-                    } else {
-                        countEl.style.display = 'none';
-                    }
-                }
+                if (countEl) countEl.textContent = String(cartCount ?? 0);
             }
 
             async function postCartAction(payload) {
@@ -361,9 +353,6 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
 
                 const text = await res.text();
                 try {

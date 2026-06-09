@@ -21,24 +21,24 @@ window.onscroll =()=>{
 
 // ===== Dark Mode Toggle =====
 const darkModeToggle = document.querySelector('#dark-mode-toggle');
-if (darkModeToggle) {
-    // Sync toggle icon based on pre-rendered body state (no FOUC page load check needed here)
-    if (document.body.classList.contains('dark-mode')) {
-        darkModeToggle.classList.replace('bx-moon', 'bx-sun');
-    }
 
-    darkModeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('darkMode', 'enabled');
-            darkModeToggle.classList.replace('bx-moon', 'bx-sun');
-        } else {
-            localStorage.setItem('darkMode', 'disabled');
-            darkModeToggle.classList.replace('bx-sun', 'bx-moon');
-        }
-    });
+// Apply saved preference on page load
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.classList.replace('bx-moon', 'bx-sun');
 }
+
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        darkModeToggle.classList.replace('bx-moon', 'bx-sun');
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+        darkModeToggle.classList.replace('bx-sun', 'bx-moon');
+    }
+});
 
 (function () {
     var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -126,15 +126,7 @@ if (searchInput && productContainer) {
 
     function updateCartCount(cartCount) {
         const countEl = document.getElementById('cart-count');
-        if (countEl) {
-            const count = parseInt(cartCount ?? 0);
-            countEl.textContent = count;
-            if (count > 0) {
-                countEl.style.display = 'inline-flex';
-            } else {
-                countEl.style.display = 'none';
-            }
-        }
+        if (countEl) countEl.textContent = String(cartCount ?? 0);
     }
 
     function formatAddToast(message, name) {
@@ -204,9 +196,6 @@ if (searchInput && productContainer) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
         });
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
         const text = await res.text();
         try {
             return JSON.parse(text);
@@ -229,10 +218,6 @@ if (searchInput && productContainer) {
                 if (data && data.success) {
                     renderCartTable(data);
                     showToast(data.message || 'Cart updated.');
-                    // Sync the slide-out sidebar cart
-                    if (window.fetchSidebarCart) {
-                        window.fetchSidebarCart();
-                    }
                 } else {
                     showToast((data && data.message) ? data.message : 'Unable to update cart.');
                 }
@@ -250,10 +235,6 @@ if (searchInput && productContainer) {
                 if (data && data.success) {
                     renderCartTable(data);
                     showToast(data.message || 'Item removed.');
-                    // Sync the slide-out sidebar cart
-                    if (window.fetchSidebarCart) {
-                        window.fetchSidebarCart();
-                    }
                 } else {
                     showToast((data && data.message) ? data.message : 'Unable to remove item.');
                 }
