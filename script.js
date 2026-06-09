@@ -151,7 +151,7 @@ if (searchInput && productContainer) {
             const price = Number(item.price ?? 0);
             const qty = Number(item.quantity ?? 0);
             const image = item.image ?? '';
-            const lineTotal = price * qty;
+            const lineTotal = Math.round(price * qty * 100) / 100;
 
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', String(id));

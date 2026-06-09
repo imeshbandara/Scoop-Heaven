@@ -171,10 +171,10 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 itemEl.className = 'cart-sidebar-item';
                 itemEl.setAttribute('data-id', item.id);
 
-                const priceNum = parseFloat(item.price);
+                const priceNum = Math.round(parseFloat(item.price ?? 0) * 100) / 100;
 
                 itemEl.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" class="cart-sidebar-item-img">
+                    <img src="${item.image}" alt="${item.name}" class="cart-sidebar-item-img" loading="lazy" onerror="this.onerror=null; this.src='asset/main.png';">
                     <div class="cart-sidebar-item-info">
                         <h4 class="cart-sidebar-item-name">${item.name}</h4>
                         <span class="cart-sidebar-item-price">Rs. ${priceNum.toFixed(2)}</span>
@@ -191,7 +191,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 cartSidebarBody.appendChild(itemEl);
             });
 
-            const grandTotalNum = parseFloat(data.grandTotal);
+            const grandTotalNum = Math.round(parseFloat(data.grandTotal ?? 0) * 100) / 100;
             if (cartSidebarTotal) cartSidebarTotal.textContent = `Rs. ${grandTotalNum.toFixed(2)}`;
             if (cartCheckoutBtn) {
                 cartCheckoutBtn.classList.remove('disabled');

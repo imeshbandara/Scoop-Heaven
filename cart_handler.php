@@ -41,8 +41,8 @@ function cartTotals(array $cart): array {
     }
     $grandTotal = $subtotal; // No extra fees right now
     return [
-        'subtotal' => $subtotal,
-        'grandTotal' => $grandTotal,
+        'subtotal' => round($subtotal, 2),
+        'grandTotal' => round($grandTotal, 2),
     ];
 }
 
