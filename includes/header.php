@@ -131,6 +131,9 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'get' })
             });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             if (data && data.success) {
                 renderSidebarCart(data);
@@ -208,6 +211,9 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
             return await res.json();
         } catch (error) {
             console.error('Error posting cart action:', error);
