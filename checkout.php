@@ -1,5 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_samesite', 'Strict');
+    session_start();
+}
 
 include('config/db.php');
 include('includes/header.php');
@@ -14,9 +19,16 @@ if (isset($_GET['flavor'], $_GET['price'])) {
     $image_path = !empty($_GET['image']) ? (string)urldecode($_GET['image']) : 'asset/main.png';
 
     if ($selected_flavor !== '' && $price > 0) {
-        $safeFlavor = mysqli_real_escape_string($conn, $selected_flavor);
-        $lookupRes = mysqli_query($conn, "SELECT id, price, image_path FROM flavors WHERE name = '$safeFlavor' LIMIT 1");
-        $lookupRow = $lookupRes ? mysqli_fetch_assoc($lookupRes) : null;
+        $lookupRow = null;
+        $lookupStmt = mysqli_prepare($conn, "SELECT id, price, image_path FROM flavors WHERE name = ? LIMIT 1");
+        if ($lookupStmt) {
+            mysqli_stmt_bind_param($lookupStmt, "s", $selected_flavor);
+            if (mysqli_stmt_execute($lookupStmt)) {
+                $lookupRes = mysqli_stmt_get_result($lookupStmt);
+                $lookupRow = $lookupRes ? mysqli_fetch_assoc($lookupRes) : null;
+            }
+            mysqli_stmt_close($lookupStmt);
+        }
 
         $flavorId = (int)($lookupRow['id'] ?? 0);
         $unitPrice = (float)($lookupRow['price'] ?? $price);

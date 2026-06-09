@@ -1,14 +1,19 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_samesite', 'Strict');
+    session_start();
+}
 include('config/db.php');
 
 if (!isset($_POST['place_order'])) {
     exit();
 }
 
-$customer_name = mysqli_real_escape_string($conn, $_POST['cust_name'] ?? '');
-$phone = mysqli_real_escape_string($conn, $_POST['cust_phone'] ?? '');
-$address = mysqli_real_escape_string($conn, $_POST['cust_address'] ?? '');
+$customer_name = trim((string)($_POST['cust_name'] ?? ''));
+$phone = trim((string)($_POST['cust_phone'] ?? ''));
+$address = trim((string)($_POST['cust_address'] ?? ''));
 
 $cart = $_SESSION['cart'] ?? [];
 if (!is_array($cart)) {
@@ -45,39 +50,44 @@ foreach ($validItems as $item) {
 $firstName = (string)($validItems[0]['name'] ?? 'Ice Cream');
 $flavorHeader = (count($distinctNames) > 1) ? 'Mixed Flavors' : $firstName;
 
-// 1) Insert order header into orders table
-$safeFlavorHeader = mysqli_real_escape_string($conn, $flavorHeader);
-$sqlHeader = "INSERT INTO orders (customer_name, phone, address, flavor_name, total_price)
-              VALUES ('$customer_name', '$phone', '$address', '$safeFlavorHeader', '$grandTotal')";
-
-if (!mysqli_query($conn, $sqlHeader)) {
-    echo "Error placing order: " . mysqli_error($conn);
-    exit();
+// 1) Insert order header into orders table using Prepared Statement
+$stmtHeader = mysqli_prepare($conn, "INSERT INTO orders (customer_name, phone, address, flavor_name, total_price) VALUES (?, ?, ?, ?, ?)");
+if ($stmtHeader) {
+    mysqli_stmt_bind_param($stmtHeader, "ssssd", $customer_name, $phone, $address, $flavorHeader, $grandTotal);
+    if (!mysqli_stmt_execute($stmtHeader)) {
+        error_log("Error executing header insert: " . mysqli_stmt_error($stmtHeader));
+        die("Error placing order. Please try again.");
+    }
+    $order_id = mysqli_insert_id($conn);
+    mysqli_stmt_close($stmtHeader);
+} else {
+    error_log("Error preparing header insert: " . mysqli_error($conn));
+    die("Error placing order. Please try again.");
 }
 
-$order_id = mysqli_insert_id($conn);
+// 2) Insert one row per cart item into detailed_orders table using Prepared Statement
+$stmtDetail = mysqli_prepare($conn, "INSERT INTO detailed_orders (order_id, flavor_id, flavor_name, quantity, unit_price, image_path, line_total) VALUES (?, ?, ?, ?, ?, ?, ?)");
+if ($stmtDetail) {
+    foreach ($validItems as $item) {
+        $flavor_name = (string)($item['name'] ?? '');
+        $flavor_id = (int)($item['id'] ?? 0);
+        $quantity = (int)($item['quantity'] ?? 0);
+        $unit_price = (float)($item['price'] ?? 0);
+        $image_path = (string)($item['image'] ?? '');
+        if ($image_path !== '' && strpos($image_path, '/') === false) {
+            // Defensive: ensure image has path prefix.
+            $image_path = 'asset/' . $image_path;
+        }
+        $line_total = (float)($unit_price * $quantity);
 
-// 2) Insert one row per cart item into detailed_orders table
-foreach ($validItems as $item) {
-    $flavor_name = mysqli_real_escape_string($conn, (string)($item['name'] ?? ''));
-    $flavor_id = (int)($item['id'] ?? 0);
-    $quantity = (int)($item['quantity'] ?? 0);
-    $unit_price = (float)($item['price'] ?? 0);
-    $image_path = (string)($item['image'] ?? '');
-    if ($image_path !== '' && strpos($image_path, '/') === false) {
-        // Defensive: ensure image has path prefix.
-        $image_path = 'asset/' . $image_path;
+        mysqli_stmt_bind_param($stmtDetail, "iisisds", $order_id, $flavor_id, $flavor_name, $quantity, $unit_price, $image_path, $line_total);
+        if (!mysqli_stmt_execute($stmtDetail)) {
+            error_log("Error executing detail insert: " . mysqli_stmt_error($stmtDetail));
+        }
     }
-    $image_path_safe = mysqli_real_escape_string($conn, $image_path);
-
-    $line_total = (float)($unit_price * $quantity);
-
-    $sqlDetail = "INSERT INTO detailed_orders
-        (order_id, flavor_id, flavor_name, quantity, unit_price, image_path, line_total)
-        VALUES
-        ('$order_id', '$flavor_id', '$flavor_name', '$quantity', '$unit_price', '$image_path_safe', '$line_total')";
-
-    mysqli_query($conn, $sqlDetail);
+    mysqli_stmt_close($stmtDetail);
+} else {
+    error_log("Error preparing detail insert: " . mysqli_error($conn));
 }
 
 // Clear cart after successful placement

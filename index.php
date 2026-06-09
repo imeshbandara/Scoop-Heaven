@@ -141,46 +141,52 @@
         $trending_result = mysqli_query($conn, $trending_sql);
 
         if (mysqli_num_rows($trending_result) > 0) {
-            while($t_row = mysqli_fetch_assoc($trending_result)) {
-                $f_name = $t_row['flavor_name'];
-                // Fetch the image and price from the flavors table for this specific name
-                $details_sql = "SELECT * FROM flavors WHERE name = '$f_name' LIMIT 1";
-                $details_res = mysqli_query($conn, $details_sql);
-                
-                if($details = mysqli_fetch_assoc($details_res)) {
-                    ?>
-                    <div class="box" style="border: 2px solid var(--main-color);">
-                        <div style="position: absolute; top: 10px; right: 10px; background: gold; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 10;">
-                            🔥 Bestseller
-                        </div>
-                        <?php
-                        $tImg = $details['image_path'] ?? '';
-                        if ($tImg !== '' && strpos($tImg, '/') === false) {
-                            $tImg = 'asset/' . $tImg;
+            $details_stmt = mysqli_prepare($conn, "SELECT * FROM flavors WHERE name = ? LIMIT 1");
+            if ($details_stmt) {
+                while($t_row = mysqli_fetch_assoc($trending_result)) {
+                    $f_name = $t_row['flavor_name'];
+                    mysqli_stmt_bind_param($details_stmt, "s", $f_name);
+                    if (mysqli_stmt_execute($details_stmt)) {
+                        $details_res = mysqli_stmt_get_result($details_stmt);
+                        if ($details = mysqli_fetch_assoc($details_res)) {
+                            $tImg = $details['image_path'] ?? '';
+                            if ($tImg !== '' && strpos($tImg, '/') === false) {
+                                $tImg = 'asset/' . $tImg;
+                            }
+                            if ($tImg === '') {
+                                $tImg = 'asset/main.png';
+                            }
+                            $safeImg = htmlspecialchars($tImg, ENT_QUOTES, 'UTF-8');
+                            $safeName = htmlspecialchars($details['name'] ?? '', ENT_QUOTES, 'UTF-8');
+                            $safePrice = htmlspecialchars($details['price'] ?? '', ENT_QUOTES, 'UTF-8');
+                            ?>
+                            <div class="box" style="border: 2px solid var(--main-color);">
+                                <div style="position: absolute; top: 10px; right: 10px; background: gold; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 10;">
+                                    🔥 Bestseller
+                                </div>
+                                <img src="<?php echo $safeImg; ?>" alt="<?php echo $safeName; ?>">
+                                <h3><?php echo $safeName; ?></h3>
+                                <div class="content">
+                                    <span>Rs. <?php echo $safePrice; ?>/=</span>
+                                    <button
+                                        type="button"
+                                        class="btn add-to-cart"
+                                        data-id="<?php echo (int)($details['id'] ?? 0); ?>"
+                                        data-name="<?php echo $safeName; ?>"
+                                        data-price="<?php echo (float)($details['price'] ?? 0); ?>"
+                                        data-image="<?php echo $safeImg; ?>"
+                                    >
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                            <?php
                         }
-                        if ($tImg === '') {
-                            $tImg = 'asset/main.png';
-                        }
-                        ?>
-                        <img src="<?php echo $tImg; ?>" alt="<?php echo $details['name']; ?>">
-                        <h3><?php echo $details['name']; ?></h3>
-                        <div class="content">
-                            <span>Rs. <?php echo $details['price']; ?>/=</span>
-                            <button
-                                type="button"
-                                class="btn add-to-cart"
-                                data-id="<?php echo (int)($details['id'] ?? 0); ?>"
-                                data-name="<?php echo htmlspecialchars($details['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                data-price="<?php echo (float)($details['price'] ?? 0); ?>"
-                                data-image="<?php echo htmlspecialchars($tImg, ENT_QUOTES, 'UTF-8'); ?>"
-                            >
-                                Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <?php
+                    }
                 }
+                mysqli_stmt_close($details_stmt);
             }
+        }
         } else {
             echo "<p style='text-align:center; width:100%;'>Start ordering to see what's trending!</p>";
         }
@@ -225,24 +231,25 @@
             if ($img !== '' && strpos($img, '/') === false) {
                 $img = 'asset/' . $img;
             }
-                if ($img === '') {
-                    $img = 'asset/main.png';
-                }
+            if ($img === '') {
+                $img = 'asset/main.png';
+            }
+            $safeImg = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
+            $safeName = htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8');
+            $safePrice = htmlspecialchars($row['price'] ?? '', ENT_QUOTES, 'UTF-8');
             ?>
             <div class="box">
-                <img src="<?php echo $img; ?>" alt="<?php echo $row['name']; ?>">
-                
-                <h3><?php echo $row['name']; ?></h3>
-                
+                <img src="<?php echo $safeImg; ?>" alt="<?php echo $safeName; ?>">
+                <h3><?php echo $safeName; ?></h3>
                 <div class="content">
-                    <span>Rs. <?php echo $row['price']; ?>/=</span>
+                    <span>Rs. <?php echo $safePrice; ?>/=</span>
                     <button
                         type="button"
                         class="btn add-to-cart"
                         data-id="<?php echo (int)($row['id'] ?? 0); ?>"
-                        data-name="<?php echo htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                        data-name="<?php echo $safeName; ?>"
                         data-price="<?php echo (float)($row['price'] ?? 0); ?>"
-                        data-image="<?php echo htmlspecialchars($img, ENT_QUOTES, 'UTF-8'); ?>"
+                        data-image="<?php echo $safeImg; ?>"
                     >
                         Add to Cart
                     </button>
@@ -275,18 +282,20 @@
 
         if (mysqli_num_rows($rev_result) > 0) {
             while($rev = mysqli_fetch_assoc($rev_result)) {
+                $safeName = htmlspecialchars($rev['name'] ?? '', ENT_QUOTES, 'UTF-8');
+                $safeMessage = htmlspecialchars($rev['message'] ?? '', ENT_QUOTES, 'UTF-8');
+                $starsCount = max(0, min(5, (int)($rev['stars'] ?? 5)));
                 ?>
                 <div class="box">
                     <div class="stars">
                         <?php 
-                        
-                        for($i=0; $i<$rev['stars']; $i++) {
+                        for($i=0; $i<$starsCount; $i++) {
                             echo "<i class='bx bx-star'></i>";
                         }
                         ?>
                     </div>
-                    <p><?php echo $rev['message']; ?></p>
-                    <h2><?php echo $rev['name']; ?></h2>
+                    <p><?php echo $safeMessage; ?></p>
+                    <h2><?php echo $safeName; ?></h2>
                     <img src="user-icon.png" alt=""> </div>
                 <?php
             }

@@ -1,5 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_samesite', 'Strict');
+    session_start();
+}
 include('config/db.php');
 
 header('Content-Type: application/json; charset=utf-8');
@@ -64,16 +69,14 @@ try {
         }
 
         $idKey = (string)$id; // store keys as strings in session
-        $nameEsc = mysqli_real_escape_string($conn, $name);
-        $imageEsc = mysqli_real_escape_string($conn, $image);
 
         if (!isset($_SESSION['cart'][$idKey])) {
             $_SESSION['cart'][$idKey] = [
-                'id' => $id,
-                'name' => $nameEsc,
-                'price' => $price,
-                'quantity' => $qtyToAdd,
-                'image' => $imageEsc,
+                'id' => (int)$id,
+                'name' => (string)$name,
+                'price' => (float)$price,
+                'quantity' => (int)$qtyToAdd,
+                'image' => (string)$image,
             ];
         } else {
             $_SESSION['cart'][$idKey]['quantity'] = (int)$_SESSION['cart'][$idKey]['quantity'] + $qtyToAdd;
