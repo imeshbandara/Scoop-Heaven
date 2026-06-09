@@ -410,6 +410,49 @@ if ($orderFound && !$isCancelled) {
             line-height: 1.6;
         }
 
+        /* Dark Mode overrides */
+        body.dark-mode .sh-track {
+            --sh-bg: #1a1a1a;
+            --sh-ink: #ffffff;
+            --sh-muted: #b0b0b0;
+            --sh-card: #2d2d2d;
+            --sh-border: rgba(255, 255, 255, 0.12);
+            --sh-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+            background:
+                radial-gradient(1200px 500px at 50% 0%, rgba(255, 79, 161, 0.20), transparent 55%),
+                linear-gradient(180deg, #1a1a1a, #111111);
+        }
+        body.dark-mode .sh-input {
+            background: #252525;
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        body.dark-mode .sh-inputIcon {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        body.dark-mode .sh-tracker {
+            background: #252525;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        body.dark-mode .sh-steps::before {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        body.dark-mode .sh-dot {
+            background: #252525;
+            border-color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.6);
+        }
+        body.dark-mode .sh-kv {
+            background: rgba(255, 79, 161, 0.08);
+            border-color: rgba(255, 79, 161, 0.2);
+        }
+        body.dark-mode .sh-k {
+            color: var(--sh-muted);
+        }
+        body.dark-mode .sh-v {
+            color: var(--sh-ink);
+        }
+
         @media (max-width: 720px) {
             .sh-track { padding: 130px 6% 60px; }
             .sh-grid { grid-template-columns: 1fr; }
@@ -425,12 +468,12 @@ if ($orderFound && !$isCancelled) {
 
 <main class="sh-track">
     <div class="sh-track__wrap">
-        <header class="sh-track__hero">
+        <div class="sh-track__hero">
             <h1 class="sh-track__title">Track Your Scoop</h1>
             <p class="sh-track__subtitle">
                 Enter the phone number you used while ordering, and we’ll show your latest order status.
             </p>
-        </header>
+        </div>
 
         <section class="sh-search" aria-label="Order tracking search">
             <form method="POST" class="sh-search__form" autocomplete="off">
