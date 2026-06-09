@@ -186,7 +186,6 @@
                 }
                 mysqli_stmt_close($details_stmt);
             }
-        }
         } else {
             echo "<p style='text-align:center; width:100%;'>Start ordering to see what's trending!</p>";
         }
