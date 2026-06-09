@@ -8,18 +8,32 @@ $error = null;
 
 if (isset($_POST['track'])) {
     $searchedPhone = trim((string)($_POST['phone'] ?? ''));
-    $phoneEscaped = mysqli_real_escape_string($conn, $searchedPhone);
-
-    $order_res = mysqli_query(
-        $conn,
-        "SELECT * FROM orders WHERE phone = '$phoneEscaped' ORDER BY order_id DESC LIMIT 1"
-    );
-
-    if ($order_res && mysqli_num_rows($order_res) > 0) {
-        $order = mysqli_fetch_assoc($order_res);
-        $orderFound = true;
-    } else {
+    
+    try {
+        $stmt = mysqli_prepare($conn, "SELECT * FROM orders WHERE phone = ? ORDER BY order_id DESC LIMIT 1");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $searchedPhone);
+            if (mysqli_stmt_execute($stmt)) {
+                $order_res = mysqli_stmt_get_result($stmt);
+                if ($order_res && mysqli_num_rows($order_res) > 0) {
+                    $order = mysqli_fetch_assoc($order_res);
+                    $orderFound = true;
+                } else {
+                    $orderFound = false;
+                }
+            } else {
+                $orderFound = false;
+                $error = "Unable to execute the tracking query. Please try again.";
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            $orderFound = false;
+            $error = "Tracking preparation failed.";
+        }
+    } catch (Throwable $e) {
+        error_log("Order tracking database lookup exception: " . $e->getMessage());
         $orderFound = false;
+        $error = "We encountered a database error while looking up your order. Please try again later.";
     }
 }
 
