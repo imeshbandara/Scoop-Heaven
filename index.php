@@ -309,8 +309,8 @@
 <section class="add-review" style="padding: 50px 10%; background: #fef4f8;">
     <h3>Leave a Review</h3>
     <form action="submit_review.php" method="POST" style="max-width: 500px; display: flex; flex-direction: column; gap: 10px;">
-        <input type="text" name="rev_name" placeholder="Your Name" required style="padding: 10px;">
-        <textarea name="rev_msg" placeholder="Your Feedback" required style="padding: 10px;"></textarea>
+        <input type="text" name="rev_name" id="rev_name" placeholder="Your Name" required pattern=".*\S.*" minlength="2" style="padding: 10px;">
+        <textarea name="rev_msg" id="rev_msg" placeholder="Your Feedback" required minlength="3" style="padding: 10px;"></textarea>
         <select name="rev_stars" style="padding: 10px;">
             <option value="5">5 Stars</option>
             <option value="4">4 Stars</option>
@@ -398,6 +398,36 @@
                     showToast('Network error. Please try again.');
                 }
             });
+
+            const reviewForm = document.querySelector('.add-review form');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', function(e) {
+                    const nameInput = document.getElementById('rev_name');
+                    const msgInput = document.getElementById('rev_msg');
+                    
+                    const name = nameInput ? nameInput.value.trim() : '';
+                    const msg = msgInput ? msgInput.value.trim() : '';
+                    
+                    if (!name) {
+                        e.preventDefault();
+                        alert('Name cannot be empty or just spaces.');
+                        if (nameInput) nameInput.focus();
+                        return;
+                    }
+                    if (name.length < 2) {
+                        e.preventDefault();
+                        alert('Name must be at least 2 characters long.');
+                        if (nameInput) nameInput.focus();
+                        return;
+                    }
+                    if (!msg || msg.replace(/\s/g, '').length < 3) {
+                        e.preventDefault();
+                        alert('Feedback must be at least 3 non-space characters long.');
+                        if (msgInput) msgInput.focus();
+                        return;
+                    }
+                });
+            }
         })();
     </script>
 

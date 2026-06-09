@@ -106,15 +106,15 @@ $image_path = $firstItem ? (string)($firstItem['image'] ?? 'asset/main.png') : '
             <form action="process_order.php" method="POST" class="checkout-form">
 
                 <div class="input-group">
-                    <input type="text" name="cust_name" placeholder="Full Name" required>
+                    <input type="text" name="cust_name" id="cust_name" placeholder="Full Name" required pattern=".*\S.*" minlength="2">
                 </div>
 
                 <div class="input-group">
-                    <input type="text" name="cust_phone" placeholder="Phone Number" required>
+                    <input type="tel" name="cust_phone" id="cust_phone" placeholder="Phone Number" required pattern="^\+?[0-9\s\-]{7,15}$">
                 </div>
 
                 <div class="input-group">
-                    <textarea name="cust_address" placeholder="Delivery Address" rows="3" required></textarea>
+                    <textarea name="cust_address" id="cust_address" placeholder="Delivery Address" rows="3" required minlength="5"></textarea>
                 </div>
 
                 <button type="submit" name="place_order" class="confirm-btn">Confirm & Pay (COD)</button>
@@ -143,6 +143,51 @@ $image_path = $firstItem ? (string)($firstItem['image'] ?? 'asset/main.png') : '
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.checkout-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const nameInput = document.getElementById('cust_name');
+            const phoneInput = document.getElementById('cust_phone');
+            const addressInput = document.getElementById('cust_address');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const address = addressInput ? addressInput.value.trim() : '';
+
+            if (!name) {
+                e.preventDefault();
+                alert('Name cannot be empty or just spaces.');
+                if (nameInput) nameInput.focus();
+                return;
+            }
+            if (name.length < 2) {
+                e.preventDefault();
+                alert('Name must be at least 2 characters long.');
+                if (nameInput) nameInput.focus();
+                return;
+            }
+
+            const phoneRegex = /^\+?[0-9\s\-]{7,15}$/;
+            if (!phoneRegex.test(phone)) {
+                e.preventDefault();
+                alert('Please enter a valid phone number structure (7 to 15 digits, optional leading plus, spaces/hyphens allowed).');
+                if (phoneInput) phoneInput.focus();
+                return;
+            }
+
+            if (!address || address.replace(/\s/g, '').length < 5) {
+                e.preventDefault();
+                alert('Address must be at least 5 non-space characters long.');
+                if (addressInput) addressInput.focus();
+                return;
+            }
+        });
+    }
+});
+</script>
 
 <?php include('includes/footer.php'); ?>
 </body>
