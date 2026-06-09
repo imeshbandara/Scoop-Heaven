@@ -126,7 +126,15 @@ if (searchInput && productContainer) {
 
     function updateCartCount(cartCount) {
         const countEl = document.getElementById('cart-count');
-        if (countEl) countEl.textContent = String(cartCount ?? 0);
+        if (countEl) {
+            const count = parseInt(cartCount ?? 0);
+            countEl.textContent = count;
+            if (count > 0) {
+                countEl.style.display = 'inline-flex';
+            } else {
+                countEl.style.display = 'none';
+            }
+        }
     }
 
     function formatAddToast(message, name) {
@@ -221,6 +229,10 @@ if (searchInput && productContainer) {
                 if (data && data.success) {
                     renderCartTable(data);
                     showToast(data.message || 'Cart updated.');
+                    // Sync the slide-out sidebar cart
+                    if (window.fetchSidebarCart) {
+                        window.fetchSidebarCart();
+                    }
                 } else {
                     showToast((data && data.message) ? data.message : 'Unable to update cart.');
                 }
@@ -238,6 +250,10 @@ if (searchInput && productContainer) {
                 if (data && data.success) {
                     renderCartTable(data);
                     showToast(data.message || 'Item removed.');
+                    // Sync the slide-out sidebar cart
+                    if (window.fetchSidebarCart) {
+                        window.fetchSidebarCart();
+                    }
                 } else {
                     showToast((data && data.message) ? data.message : 'Unable to remove item.');
                 }

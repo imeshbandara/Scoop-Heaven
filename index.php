@@ -344,7 +344,15 @@
 
             function updateCartCount(cartCount) {
                 const countEl = document.getElementById('cart-count');
-                if (countEl) countEl.textContent = String(cartCount ?? 0);
+                if (countEl) {
+                    const count = parseInt(cartCount ?? 0);
+                    countEl.textContent = count;
+                    if (count > 0) {
+                        countEl.style.display = 'inline-flex';
+                    } else {
+                        countEl.style.display = 'none';
+                    }
+                }
             }
 
             async function postCartAction(payload) {
