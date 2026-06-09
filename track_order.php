@@ -98,14 +98,14 @@ if ($orderFound && !$isCancelled) {
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <style>
         .sh-track {
-            --sh-pink: #ff4fa1;
-            --sh-pink-soft: #ffe3f0;
-            --sh-bg: #fff;
-            --sh-ink: #2b2b2b;
+            --sh-pink: var(--accent-color);
+            --sh-pink-soft: var(--accent-soft);
+            --sh-bg: var(--bg-color);
+            --sh-ink: var(--text-color);
             --sh-muted: #6b6b6b;
-            --sh-card: #ffffff;
-            --sh-border: rgba(43, 43, 43, 0.10);
-            --sh-shadow: 0 18px 45px rgba(17, 17, 17, 0.12);
+            --sh-card: var(--card-bg);
+            --sh-border: var(--border-color);
+            --sh-shadow: var(--box-shadow);
             --sh-radius: 22px;
             padding: 150px 10% 70px;
             min-height: 80vh;
