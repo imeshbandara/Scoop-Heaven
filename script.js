@@ -21,24 +21,24 @@ window.onscroll =()=>{
 
 // ===== Dark Mode Toggle =====
 const darkModeToggle = document.querySelector('#dark-mode-toggle');
-
-// Apply saved preference on page load
-if (localStorage.getItem('darkMode') === 'enabled') {
-    document.body.classList.add('dark-mode');
-    darkModeToggle.classList.replace('bx-moon', 'bx-sun');
-}
-
-darkModeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-
+if (darkModeToggle) {
+    // Sync toggle icon based on pre-rendered body state (no FOUC page load check needed here)
     if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
         darkModeToggle.classList.replace('bx-moon', 'bx-sun');
-    } else {
-        localStorage.setItem('darkMode', 'disabled');
-        darkModeToggle.classList.replace('bx-sun', 'bx-moon');
     }
-});
+
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+            darkModeToggle.classList.replace('bx-moon', 'bx-sun');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+            darkModeToggle.classList.replace('bx-sun', 'bx-moon');
+        }
+    });
+}
 
 (function () {
     var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

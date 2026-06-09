@@ -13,6 +13,13 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     }
 }
 ?>
+<script>
+    (function() {
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    })();
+</script>
 
 <header class="site-header">
     <a href="index.php" class="brand">
