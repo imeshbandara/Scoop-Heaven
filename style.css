@@ -2109,3 +2109,22 @@ body.dark-mode .detail-label {
     pointer-events: none;
     transform: none;
 }
+
+/* ===== Responsive overrides for checkout page ===== */
+@media (max-width: 600px) {
+    .checkout-container {
+        margin-top: 80px;
+        padding: 10px;
+    }
+    .checkout-panel, .summary-panel {
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+    .hero-card {
+        height: 160px;
+        border-radius: 15px;
+    }
+    .hero-card h3 {
+        font-size: 1.4rem;
+    }
+}

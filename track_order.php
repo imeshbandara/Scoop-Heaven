@@ -453,7 +453,7 @@ if ($orderFound && !$isCancelled) {
             color: var(--sh-ink);
         }
 
-        @media (max-width: 720px) {
+        @media (max-width: 850px) {
             .sh-track { padding: 130px 6% 60px; }
             .sh-grid { grid-template-columns: 1fr; }
             .sh-steps { grid-template-columns: 1fr; gap: 14px; padding: 8px 0 0; }
