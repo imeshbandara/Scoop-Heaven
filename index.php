@@ -373,7 +373,6 @@
                 const image = addBtn.dataset.image;
 
                 try {
-                    console.log('Add to cart clicked:', { id, name, price, image });
                     const data = await postCartAction({
                         action: 'add',
                         id: id,
@@ -383,7 +382,6 @@
                         quantity: 1
                     });
 
-                    console.log('cart_handler response:', data);
                     if (data && data.success) {
                         updateCartCount(data.cartCount);
                         showToast('Item added to cart!');
